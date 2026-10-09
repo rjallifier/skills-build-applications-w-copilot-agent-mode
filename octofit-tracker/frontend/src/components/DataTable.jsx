@@ -1,8 +1,8 @@
 import { buildApiUrl, useApiCollection } from '../api.js'
 import { getId } from '../formatters.js'
 
-function DataTable({ title, endpoint, columns, emptyMessage }) {
-  const { items, loading, error } = useApiCollection(endpoint)
+function DataTable({ title, endpoint, load, columns, emptyMessage }) {
+  const { items, loading, error } = useApiCollection(load)
 
   return (
     <section className="card shadow-sm">

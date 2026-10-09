@@ -1,5 +1,12 @@
 import { displayName } from '../formatters.js'
+import { buildApiUrl } from '../api.js'
 import DataTable from './DataTable.jsx'
+
+const ENDPOINT = '/api/workouts/'
+
+function loadWorkouts(signal) {
+  return fetch(buildApiUrl(ENDPOINT), { signal, headers: { Accept: 'application/json' } })
+}
 
 const columns = [
   { header: 'Workout', render: (workout) => <strong>{displayName(workout.name)}</strong> },
@@ -19,7 +26,7 @@ const columns = [
 ]
 
 function Workouts() {
-  return <DataTable title="Workouts" endpoint="workouts" columns={columns} />
+  return <DataTable title="Workouts" endpoint={ENDPOINT} load={loadWorkouts} columns={columns} />
 }
 
 export default Workouts

@@ -24,8 +24,8 @@ function resolveApiBaseUrl() {
 
 export const API_BASE_URL = resolveApiBaseUrl()
 
-export function buildApiUrl(endpoint) {
-  return `${API_BASE_URL}/api/${endpoint}/`
+export function buildApiUrl(path) {
+  return `${API_BASE_URL}${path}`
 }
 
 // Accepts plain arrays as well as paginated payloads such as
@@ -46,24 +46,24 @@ export function normalizeCollection(payload) {
   return []
 }
 
-export async function fetchCollection(endpoint, { signal } = {}) {
-  const url = buildApiUrl(endpoint)
-  const response = await fetch(url, { signal, headers: { Accept: 'application/json' } })
-
+async function readCollection(response) {
   if (!response.ok) {
-    throw new Error(`Request to ${url} failed with status ${response.status}`)
+    throw new Error(`Request to ${response.url} failed with status ${response.status}`)
   }
 
   return normalizeCollection(await response.json())
 }
 
-export function useApiCollection(endpoint) {
+// `load` receives an AbortSignal and must resolve to a fetch Response.
+// Define it at module scope so it stays referentially stable across renders.
+export function useApiCollection(load) {
   const [state, setState] = useState({ items: [], loading: true, error: null })
 
   useEffect(() => {
     const controller = new AbortController()
 
-    fetchCollection(endpoint, { signal: controller.signal })
+    load(controller.signal)
+      .then(readCollection)
       .then((items) => setState({ items, loading: false, error: null }))
       .catch((error) => {
         if (error.name !== 'AbortError') {
@@ -72,7 +72,7 @@ export function useApiCollection(endpoint) {
       })
 
     return () => controller.abort()
-  }, [endpoint])
+  }, [load])
 
   return state
 }

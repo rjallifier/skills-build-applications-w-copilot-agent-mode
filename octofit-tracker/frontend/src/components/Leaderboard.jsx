@@ -1,5 +1,12 @@
 import { displayName } from '../formatters.js'
+import { buildApiUrl } from '../api.js'
 import DataTable from './DataTable.jsx'
+
+const ENDPOINT = '/api/leaderboard/'
+
+function loadLeaderboard(signal) {
+  return fetch(buildApiUrl(ENDPOINT), { signal, headers: { Accept: 'application/json' } })
+}
 
 const columns = [
   {
@@ -14,7 +21,7 @@ const columns = [
 ]
 
 function Leaderboard() {
-  return <DataTable title="Leaderboard" endpoint="leaderboard" columns={columns} />
+  return <DataTable title="Leaderboard" endpoint={ENDPOINT} load={loadLeaderboard} columns={columns} />
 }
 
 export default Leaderboard
