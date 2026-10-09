@@ -1,6 +1,10 @@
 import mongoose from 'mongoose';
-
-const connectionString = process.env.MONGODB_URI || 'mongodb://localhost:27017/octofit_db';
+import { connectionString } from '../config/database.js';
+import Activities from '../models/Activities.js';
+import Leaderboard from '../models/Leaderboard.js';
+import Teams from '../models/Teams.js';
+import Users from '../models/Users.js';
+import Workouts from '../models/Workouts.js';
 
 /**
  * Seed the octofit_db database with test data
@@ -11,9 +15,61 @@ async function seedDatabase() {
 
     console.log('Connected to octofit_db');
 
-    // TODO: Add seed data for users, teams, activities, leaderboard, and workouts
+    await Promise.all([
+      Users.deleteMany({}),
+      Teams.deleteMany({}),
+      Activities.deleteMany({}),
+      Leaderboard.deleteMany({}),
+      Workouts.deleteMany({}),
+    ]);
 
-    console.log('Database seeding complete');
+    const [mona, alex, priya] = await Users.create([
+      { name: 'Mona', email: 'mona@octofit.example', level: 'Gold' },
+      { name: 'Alex', email: 'alex@octofit.example', level: 'Silver' },
+      { name: 'Priya', email: 'priya@octofit.example', level: 'Gold' },
+    ]);
+
+    const octocats = await Teams.create({
+      name: 'Octocats',
+      description: 'A friendly team focused on consistent daily movement.',
+      members: [mona._id, alex._id],
+    });
+    const codeRunners = await Teams.create({
+      name: 'Code Runners',
+      description: 'High-energy workouts for busy builders.',
+      members: [priya._id],
+    });
+
+    await Activities.create([
+      { user: mona._id, type: 'Running', durationMinutes: 35, calories: 320, completedAt: new Date('2026-10-07') },
+      { user: alex._id, type: 'Cycling', durationMinutes: 45, calories: 410, completedAt: new Date('2026-10-08') },
+      { user: priya._id, type: 'Strength', durationMinutes: 30, calories: 250, completedAt: new Date('2026-10-08') },
+    ]);
+
+    await Leaderboard.create([
+      { user: mona._id, points: 1280, rank: 1, period: 'October 2026' },
+      { user: priya._id, points: 1135, rank: 2, period: 'October 2026' },
+      { user: alex._id, points: 980, rank: 3, period: 'October 2026' },
+    ]);
+
+    await Workouts.create([
+      {
+        name: 'Morning Momentum',
+        focus: 'Full body',
+        difficulty: 'Beginner',
+        durationMinutes: 20,
+        exercises: ['Bodyweight squats', 'Push-ups', 'Plank'],
+      },
+      {
+        name: 'Runner Strength',
+        focus: 'Legs and core',
+        difficulty: 'Intermediate',
+        durationMinutes: 35,
+        exercises: ['Lunges', 'Glute bridges', 'Mountain climbers'],
+      },
+    ]);
+
+    console.log(`Seeded ${[mona, alex, priya].length} users, ${[octocats, codeRunners].length} teams, and activity, leaderboard, and workout data`);
     await mongoose.disconnect();
   } catch (error) {
     console.error('Error seeding database:', error);
