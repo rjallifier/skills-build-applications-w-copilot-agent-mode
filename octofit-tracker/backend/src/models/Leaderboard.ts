@@ -7,7 +7,7 @@ export interface LeaderboardEntry {
   period: string;
 }
 
-const leaderboardSchema = new Schema<LeaderboardEntry>(
+const leaderboardSchema = new Schema(
   {
     user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     points: { type: Number, required: true, min: 0 },
@@ -17,4 +17,4 @@ const leaderboardSchema = new Schema<LeaderboardEntry>(
   { timestamps: true },
 );
 
-export default model<LeaderboardEntry>('Leaderboard', leaderboardSchema);
+export default model('Leaderboard', leaderboardSchema);

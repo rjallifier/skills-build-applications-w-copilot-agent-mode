@@ -6,7 +6,7 @@ export interface User {
   level: string;
 }
 
-const userSchema = new Schema<User>(
+const userSchema = new Schema(
   {
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
@@ -15,4 +15,4 @@ const userSchema = new Schema<User>(
   { timestamps: true },
 );
 
-export default model<User>('User', userSchema);
+export default model('User', userSchema);

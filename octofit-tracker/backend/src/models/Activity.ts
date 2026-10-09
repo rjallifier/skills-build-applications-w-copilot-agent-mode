@@ -8,7 +8,7 @@ export interface Activity {
   completedAt: Date;
 }
 
-const activitySchema = new Schema<Activity>(
+const activitySchema = new Schema(
   {
     user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     type: { type: String, required: true },
@@ -19,4 +19,4 @@ const activitySchema = new Schema<Activity>(
   { timestamps: true },
 );
 
-export default model<Activity>('Activity', activitySchema);
+export default model('Activity', activitySchema);

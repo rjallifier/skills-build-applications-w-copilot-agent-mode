@@ -6,7 +6,7 @@ export interface Team {
   members: Types.ObjectId[];
 }
 
-const teamSchema = new Schema<Team>(
+const teamSchema = new Schema(
   {
     name: { type: String, required: true },
     description: { type: String, required: true },
@@ -15,4 +15,4 @@ const teamSchema = new Schema<Team>(
   { timestamps: true },
 );
 
-export default model<Team>('Team', teamSchema);
+export default model('Team', teamSchema);

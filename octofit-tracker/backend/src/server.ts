@@ -1,10 +1,10 @@
 import express, { type RequestHandler } from 'express';
 import { connectDatabase } from './config/database.js';
-import Activities from './models/Activities.js';
+import Activity from './models/Activity.js';
 import Leaderboard from './models/Leaderboard.js';
-import Teams from './models/Teams.js';
-import Users from './models/Users.js';
-import Workouts from './models/Workouts.js';
+import Team from './models/Team.js';
+import User from './models/User.js';
+import Workout from './models/Workout.js';
 
 const app = express();
 const port = Number(process.env.PORT || 8000);
@@ -34,11 +34,11 @@ app.get('/api/health/', (_request, response) => {
   response.json({ status: 'ok', baseUrl });
 });
 
-app.get('/api/users/', collectionHandler(() => Users.find().sort({ name: 1 }).lean()));
-app.get('/api/teams/', collectionHandler(() => Teams.find().populate('members', 'name email').lean()));
-app.get('/api/activities/', collectionHandler(() => Activities.find().populate('user', 'name').sort({ completedAt: -1 }).lean()));
+app.get('/api/users/', collectionHandler(() => User.find().sort({ name: 1 }).lean()));
+app.get('/api/teams/', collectionHandler(() => Team.find().populate('members', 'name email').lean()));
+app.get('/api/activities/', collectionHandler(() => Activity.find().populate('user', 'name').sort({ completedAt: -1 }).lean()));
 app.get('/api/leaderboard/', collectionHandler(() => Leaderboard.find().populate('user', 'name').sort({ rank: 1 }).lean()));
-app.get('/api/workouts/', collectionHandler(() => Workouts.find().sort({ name: 1 }).lean()));
+app.get('/api/workouts/', collectionHandler(() => Workout.find().sort({ name: 1 }).lean()));
 
 app.use(errorHandler);
 

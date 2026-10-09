@@ -1,10 +1,10 @@
 import mongoose from 'mongoose';
 import { connectionString } from '../config/database.js';
-import Activities from '../models/Activities.js';
+import Activity from '../models/Activity.js';
 import Leaderboard from '../models/Leaderboard.js';
-import Teams from '../models/Teams.js';
-import Users from '../models/Users.js';
-import Workouts from '../models/Workouts.js';
+import Team from '../models/Team.js';
+import User from '../models/User.js';
+import Workout from '../models/Workout.js';
 
 /**
  * Seed the octofit_db database with test data
@@ -16,31 +16,31 @@ async function seedDatabase() {
     console.log('Connected to octofit_db');
 
     await Promise.all([
-      Users.deleteMany({}),
-      Teams.deleteMany({}),
-      Activities.deleteMany({}),
+      User.deleteMany({}),
+      Team.deleteMany({}),
+      Activity.deleteMany({}),
       Leaderboard.deleteMany({}),
-      Workouts.deleteMany({}),
+      Workout.deleteMany({}),
     ]);
 
-    const [mona, alex, priya] = await Users.create([
+    const [mona, alex, priya] = await User.create([
       { name: 'Mona', email: 'mona@octofit.example', level: 'Gold' },
       { name: 'Alex', email: 'alex@octofit.example', level: 'Silver' },
       { name: 'Priya', email: 'priya@octofit.example', level: 'Gold' },
     ]);
 
-    const octocats = await Teams.create({
+    const octocats = await Team.create({
       name: 'Octocats',
       description: 'A friendly team focused on consistent daily movement.',
       members: [mona._id, alex._id],
     });
-    const codeRunners = await Teams.create({
+    const codeRunners = await Team.create({
       name: 'Code Runners',
       description: 'High-energy workouts for busy builders.',
       members: [priya._id],
     });
 
-    await Activities.create([
+    await Activity.create([
       { user: mona._id, type: 'Running', durationMinutes: 35, calories: 320, completedAt: new Date('2026-10-07') },
       { user: alex._id, type: 'Cycling', durationMinutes: 45, calories: 410, completedAt: new Date('2026-10-08') },
       { user: priya._id, type: 'Strength', durationMinutes: 30, calories: 250, completedAt: new Date('2026-10-08') },
@@ -52,7 +52,7 @@ async function seedDatabase() {
       { user: alex._id, points: 980, rank: 3, period: 'October 2026' },
     ]);
 
-    await Workouts.create([
+    await Workout.create([
       {
         name: 'Morning Momentum',
         focus: 'Full body',
