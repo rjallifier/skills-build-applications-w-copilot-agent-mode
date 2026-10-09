@@ -1,0 +1,12 @@
+body {
+  min-height: 100vh;
+}
+
+.app-logo {
+  height: 36px;
+  width: auto;
+}
+
+.navbar .nav-link.active {
+  font-weight: 600;
+}
