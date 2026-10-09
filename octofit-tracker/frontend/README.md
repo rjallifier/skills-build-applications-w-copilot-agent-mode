@@ -1,16 +1,38 @@
-# React + Vite
+# OctoFit Tracker – Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+React 19 + Vite presentation tier using `react-router-dom` for navigation and Bootstrap for styling.
 
-Currently, two official plugins are available:
+## API configuration
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+The app reads the Codespace name from the Vite environment variable `VITE_CODESPACE_NAME`
+(via `import.meta.env.VITE_CODESPACE_NAME`) and builds the API base URL from it:
 
-## React Compiler
+| `VITE_CODESPACE_NAME` | API base URL |
+| --------------------- | ------------ |
+| set (e.g. `my-codespace`) | `https://my-codespace-8000.app.github.dev` |
+| unset or invalid | `http://localhost:8000` (safe localhost fallback) |
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+**`VITE_CODESPACE_NAME` must be defined when running in GitHub Codespaces**, otherwise the
+browser will try to reach `localhost:8000`. Define it in `octofit-tracker/frontend/.env.local`
+(git-ignored), for example:
 
-## Expanding the Oxlint configuration
+```bash
+echo "VITE_CODESPACE_NAME=$CODESPACE_NAME" > octofit-tracker/frontend/.env.local
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+See `.env.example` for a template. The "Launch Vite Frontend" debug configuration in
+`.vscode/launch.json` also passes it automatically from `$CODESPACE_NAME`.
+Restart the Vite dev server after changing env files.
+
+Endpoints consumed: `/api/activities/`, `/api/leaderboard/`, `/api/teams/`, `/api/users/`,
+`/api/workouts/`. Both plain array responses and paginated responses
+(`{ results: [...] }`, `{ data: [...] }`, or `{ items: [...] }`) are supported.
+
+## Scripts
+
+```bash
+npm install --prefix octofit-tracker/frontend
+npm run dev --prefix octofit-tracker/frontend -- --host 0.0.0.0
+npm run build --prefix octofit-tracker/frontend
+npm run lint --prefix octofit-tracker/frontend
+```

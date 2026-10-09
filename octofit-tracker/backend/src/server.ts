@@ -28,6 +28,19 @@ const errorHandler: express.ErrorRequestHandler = (error, _request, response, _n
   response.status(500).json({ error: 'Unable to load requested data' });
 };
 
+// Allow the presentation tier (port 5173 / Codespaces URL) to read the API cross-origin.
+const corsHandler: RequestHandler = (request, response, next) => {
+  response.setHeader('Access-Control-Allow-Origin', '*');
+  response.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  response.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept');
+  if (request.method === 'OPTIONS') {
+    response.sendStatus(204);
+    return;
+  }
+  next();
+};
+
+app.use(corsHandler);
 app.use(express.json());
 
 app.get('/api/health/', (_request, response) => {
